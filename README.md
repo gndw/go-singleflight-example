@@ -7,6 +7,9 @@ https://pkg.go.dev/golang.org/x/sync/singleflight
 - don't do singleflight to mutate data
 - be careful when data returned by singleflight is a pointer, all callers will receive the same pointer, doing mutation to that pointer will affect all callers
 
+### Notes about this Example
+- inside all endpoints, external call is simulated using time.sleep
+- whenever concurrent external calls is happening, we are adding additional sleep time to simulate heavy process due to concurrency
 ### How to Run
 - run app by `make run-app`
 - hit 20 concurrent requests to endpoint **without singleflight** using apache benchmark with `make hit-parallel-ok-with-data` will result in 4 seconds-ish test
