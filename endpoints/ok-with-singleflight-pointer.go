@@ -7,11 +7,11 @@ import (
 	"github.com/gndw/go-singleflight-example/model"
 )
 
-func OkWithSingleflightPointer(w http.ResponseWriter, r *http.Request) {
+func (s *Service) OkWithSingleflightPointer(w http.ResponseWriter, r *http.Request) {
 
 	// do external call database using singleflight
-	v, err, shared := requestGroup.Do("key", func() (interface{}, error) {
-		return DoExternalCallToDatabaseWithPointer()
+	v, err, shared := s.requestGroup.Do("key", func() (interface{}, error) {
+		return s.externalService.DoExternalCallToDatabaseWithPointerResponse()
 	})
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)

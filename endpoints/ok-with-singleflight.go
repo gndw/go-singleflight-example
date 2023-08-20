@@ -6,24 +6,29 @@ import (
 	"net/http"
 
 	"github.com/gndw/go-singleflight-example/model"
+	"github.com/google/uuid"
 )
 
 var counter = 0
 
-func OkWithSingleflight(w http.ResponseWriter, r *http.Request) {
+func (s *Service) OkWithSingleflight(w http.ResponseWriter, r *http.Request) {
 
+	// construct response
 	response := model.BasicResponse{}
 
-	counter++
-	id := counter
-	log.Printf("request %v is coming...", id)
+	// get parameters
+	id := r.URL.Query().Get("id")     // id to grouping request, sent from client
+	requestID := uuid.NewString()[:4] // id to differentiate between each request
+
+	// logging
+	log.Printf("request %v:%v is coming...", id, requestID)
 	defer func() {
-		log.Printf("request %v is ending with shared: %v", id, response.IsUsingSF)
+		log.Printf("request %v:%v is ending with shared: %v", id, requestID, response.IsUsingSF)
 	}()
 
 	// do external call database using singleflight
-	v, err, shared := requestGroup.Do("key", func() (interface{}, error) {
-		return DoExternalCallToDatabase()
+	data, err, shared := s.requestGroup.Do("key", func() (interface{}, error) {
+		return s.externalService.DoExternalCallToDatabase(id)
 	})
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
@@ -32,7 +37,7 @@ func OkWithSingleflight(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// cast singleflight response to basic response
-	response = v.(model.BasicResponse)
+	response = data.(model.BasicResponse)
 
 	// modify response if shared
 	response.IsUsingSF = shared

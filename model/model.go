@@ -6,3 +6,9 @@ type BasicResponse struct {
 	IsUsingSF bool   `json:"is_using_sf"`
 	Value     int64  `json:"value,omitempty"`
 }
+
+type BasicConcurrentDataResponse struct {
+	ID      string   `json:"id"`
+	Notes   []string `json:"notes"`
+	Details []string `json:"details"`
+}
