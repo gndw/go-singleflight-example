@@ -27,7 +27,7 @@ func (s *Service) OkWithSingleflight(w http.ResponseWriter, r *http.Request) {
 	}()
 
 	// do external call database using singleflight
-	data, err, shared := s.requestGroup.Do("key", func() (interface{}, error) {
+	data, err, shared := s.requestGroup.Do(id, func() (interface{}, error) {
 		return s.externalService.DoExternalCallToDatabase(id)
 	})
 	if err != nil {
