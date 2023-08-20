@@ -35,6 +35,7 @@ Transfer rate:          1.18 [Kbytes/sec] received
   "id": "r002",
   "notes": [
     "number of database call: 100",
+    "max concurrency of database call: 20",
     "maximum processing time: 3002 ms",
     "average processing time: 2962 ms"
   ],
@@ -73,6 +74,7 @@ Transfer rate:          2.83 [Kbytes/sec] received
   "id": "sf002",
   "notes": [
     "number of database call: 6",
+    "max concurrency of database call: 1",
     "maximum processing time: 1102 ms",
     "average processing time: 1101 ms"
   ],
@@ -86,7 +88,7 @@ Transfer rate:          2.83 [Kbytes/sec] received
   ]
 }
 ```
-6 calls to database is made, with 20 concurrent request, resulting average process time is stable around 1102 ms.
+6 calls to database is made, with 1 concurrent request, resulting average process time is stable around 1102 ms.
 
 ### Conclusion
 - Singleflight will definitely reduce your external call as long as it was all identical

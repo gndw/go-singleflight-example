@@ -12,9 +12,11 @@ func (s *Service) GetConcurrent(w http.ResponseWriter, r *http.Request) {
 
 	id := r.URL.Query().Get("id")
 	data := s.externalService.MapOfExternalCallInMillisecondsByRequestID[id]
+	con := s.externalService.MapOfMaxConcurrencyByRequestID[id]
 
 	response := model.BasicConcurrentDataResponse{ID: id}
 	response.Notes = append(response.Notes, fmt.Sprintf("number of database call: %v", len(data)))
+	response.Notes = append(response.Notes, fmt.Sprintf("max concurrency of database call: %v", con))
 	maxTime := int64(0)
 	totalTime := int64(0)
 	for _, d := range data {

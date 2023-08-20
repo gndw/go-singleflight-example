@@ -11,6 +11,7 @@ import (
 type Service struct {
 	ConcurrencyCount                           int
 	MapOfExternalCallInMillisecondsByRequestID map[string][]int64
+	MapOfMaxConcurrencyByRequestID             map[string]int
 	Mutex                                      *sync.Mutex
 }
 
@@ -18,7 +19,8 @@ func New(mutex *sync.Mutex) *Service {
 	return &Service{
 		ConcurrencyCount: 0,
 		MapOfExternalCallInMillisecondsByRequestID: map[string][]int64{},
-		Mutex: mutex,
+		MapOfMaxConcurrencyByRequestID:             map[string]int{},
+		Mutex:                                      mutex,
 	}
 }
 
@@ -30,6 +32,9 @@ func (s *Service) DoExternalCallToDatabase(requestID string) (model.BasicRespons
 
 	// increase simulated concurrency
 	s.ConcurrencyCount++
+	if s.ConcurrencyCount > s.MapOfMaxConcurrencyByRequestID[requestID] {
+		s.MapOfMaxConcurrencyByRequestID[requestID] = s.ConcurrencyCount
+	}
 
 	// defer ending
 	defer func() {
